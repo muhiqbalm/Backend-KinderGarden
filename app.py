@@ -46,9 +46,7 @@ def predict():
         print(preds[0])
 
         # x = x.reshape([64, 64]);
-        disease_class = ['Tomato___Bacterial_spot', 'Tomato___Early_blight', 'Tomato___Late_blight', 'Tomato___Leaf_Mold', 
-                         'Tomato___Septoria_leaf_spot', 'Tomato___Spider_mites Two-spotted_spider_mite', 'Tomato___Target_Spot', 
-                         'Tomato___Tomato_Yellow_Leaf_Curl_Virus', 'Tomato___Tomato_mosaic_virus', 'Tomato___healthy']
+        disease_class = ['Bukan_Daun', 'Tomato___Bacterial_spot', 'Tomato___Early_blight', 'Tomato___Late_blight', 'Tomato___Leaf_Mold', 'Tomato___Septoria_leaf_spot', 'Tomato___Spider_mites Two-spotted_spider_mite', 'Tomato___Target_Spot', 'Tomato___Tomato_Yellow_Leaf_Curl_Virus', 'Tomato___Tomato_mosaic_virus', 'Tomato___healthy']
         a = preds[0]
         ind=np.argmax(a)
         print('Prediction:', disease_class[ind])
@@ -59,7 +57,7 @@ def predict():
 @app.route("/data", methods=["GET", "POST"])
 # @jit
 def main():
-    model = load_model("./models")
+    model = load_model("./models2")
     print('Model loaded. Check http://127.0.0.1:5000/')
 
     def model_predict(img_path, model):
@@ -81,9 +79,7 @@ def main():
     preds = model_predict('uploaded_image.jpg', model)
     print(preds[0])
 
-    disease_class = ['Tomato___Bacterial_spot', 'Tomato___Early_blight', 'Tomato___Late_blight', 'Tomato___Leaf_Mold', 
-                         'Tomato___Septoria_leaf_spot', 'Tomato___Spider_mites Two-spotted_spider_mite', 'Tomato___Target_Spot', 
-                         'Tomato___Tomato_Yellow_Leaf_Curl_Virus', 'Tomato___Tomato_mosaic_virus', 'Tomato___healthy']
+    disease_class = ['Bukan_Daun', 'Tomato___Bacterial_spot', 'Tomato___Early_blight', 'Tomato___Late_blight', 'Tomato___Leaf_Mold', 'Tomato___Septoria_leaf_spot', 'Tomato___Spider_mites Two-spotted_spider_mite', 'Tomato___Target_Spot', 'Tomato___Tomato_Yellow_Leaf_Curl_Virus', 'Tomato___Tomato_mosaic_virus', 'Tomato___healthy']
     
     a = preds[0]
     ind=np.argmax(a)
@@ -96,7 +92,7 @@ def main():
 @app.route("/upload", methods=["POST"])
 def handle_upload():
     try:
-        model = load_model("./models")
+        model = load_model("./models2")
         print('Model loaded. Check http://127.0.0.1:5000/')
 
         def model_predict(img_path, model):
@@ -116,13 +112,15 @@ def handle_upload():
         preds = model_predict('uploaded_image.jpg', model)
         print(preds[0])
 
-        disease_class = ['Tomato___Bacterial_spot', 'Tomato___Early_blight', 'Tomato___Late_blight', 'Tomato___Leaf_Mold', 
-                         'Tomato___Septoria_leaf_spot', 'Tomato___Spider_mites Two-spotted_spider_mite', 'Tomato___Target_Spot', 
-                         'Tomato___Tomato_Yellow_Leaf_Curl_Virus', 'Tomato___Tomato_mosaic_virus', 'Tomato___healthy']
+        disease_class = ['Bukan_Daun', 'Tomato___Bacterial_spot', 'Tomato___Early_blight', 'Tomato___Late_blight', 'Tomato___Leaf_Mold', 'Tomato___Septoria_leaf_spot', 'Tomato___Spider_mites Two-spotted_spider_mite', 'Tomato___Target_Spot', 'Tomato___Tomato_Yellow_Leaf_Curl_Virus', 'Tomato___Tomato_mosaic_virus', 'Tomato___healthy']
     
-        ind = np.argmax(preds[0])
-        prediction = disease_class[ind]
-        return {"predict": prediction}
+        a = preds[0]
+        ind=np.argmax(a)
+        print('Prediction:', disease_class[ind])
+        result=disease_class[ind]
+        confidence = a[ind] * 100  # Menghitung confidence dalam persentase
+        return {"predict": result, "confidence": confidence}
+    
     except Exception as e:
         print(str(e))
         return {"error": "Failed to process the uploaded image."}
